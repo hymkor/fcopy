@@ -7,6 +7,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/mattn/getwild"
+
 	"github.com/zetamatta/fcopy/file"
 )
 
