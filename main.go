@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -115,6 +116,9 @@ func main1(args []string) error {
 			os.Stdin.Read(dummy[:])
 		}
 		return err
+	}
+	if *flagPause {
+		return errors.New("To elevate with -flagPause is forbidden")
 	}
 	me, err := os.Executable()
 	if err != nil {
