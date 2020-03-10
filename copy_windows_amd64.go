@@ -1,4 +1,4 @@
-package nodos
+package main
 
 import (
 	"unsafe"

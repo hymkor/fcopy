@@ -1,4 +1,4 @@
-package nodos
+package main
 
 func Copy(src, dst string, isFailIfExists bool) error {
 	return copyFile(src, dst, isFailIfExists)
@@ -6,8 +6,4 @@ func Copy(src, dst string, isFailIfExists bool) error {
 
 func Move(src, dst string) error {
 	return moveFile(src, dst)
-}
-
-func ReadShortcut(path string) (string, string, error) {
-	return readShortcut(path)
 }
