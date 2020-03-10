@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -99,9 +100,16 @@ func main2(args []string) error {
 	}
 }
 
+var flagParse = flag.Bool("pause", false, "pause after copy")
+
 func main1(args []string) error {
 	err := main2(args)
 	if !isAccessDenied(err) {
+		if *flagParse {
+			fmt.Fprint(os.Stderr, "\n[Hit ENTER key]\n")
+			var dummy [10]byte
+			os.Stdin.Read(dummy[:])
+		}
 		return err
 	}
 	me, err := os.Executable()
@@ -114,6 +122,7 @@ func main1(args []string) error {
 	}
 
 	var buffer strings.Builder
+	buffer.WriteString("-pause")
 	for _, s := range args {
 		fmt.Fprintf(&buffer, ` "%s"`, s)
 	}
@@ -123,7 +132,8 @@ func main1(args []string) error {
 }
 
 func main() {
-	if err := main1(os.Args[1:]); err != nil {
+	flag.Parse()
+	if err := main1(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
