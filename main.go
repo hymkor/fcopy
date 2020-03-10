@@ -4,14 +4,27 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"syscall"
 	"time"
 
 	"github.com/zetamatta/fcopy/file"
 )
 
+const (
+	_ERRNO_USED_ANOTHER_PROCESS = 32
+)
+
+func isUsedAnotherProcess(err error) bool {
+	e, ok := err.(syscall.Errno)
+	return ok && e == _ERRNO_USED_ANOTHER_PROCESS
+}
+
 func copy1(src, dst string) error {
 	err := file.Copy(src, dst, false)
 	if err != nil {
+		if !isUsedAnotherProcess(err) {
+			return err
+		}
 		fmt.Fprintln(os.Stderr, err.Error())
 		backup := dst + time.Now().Format("-20060102_150405")
 		err = file.Move(dst, backup)
