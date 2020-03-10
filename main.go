@@ -12,11 +12,17 @@ import (
 
 const (
 	_ERRNO_USED_ANOTHER_PROCESS = 32
+	_ERRNO_ACCESS_IS_DENIED     = 5
 )
 
 func isUsedAnotherProcess(err error) bool {
 	e, ok := err.(syscall.Errno)
 	return ok && e == _ERRNO_USED_ANOTHER_PROCESS
+}
+
+func isAccessDenied(err error) bool {
+	e, ok := err.(syscall.Errno)
+	return ok && e == _ERRNO_ACCESS_IS_DENIED
 }
 
 func copy1(src, dst string) error {
