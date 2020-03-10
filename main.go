@@ -100,7 +100,7 @@ func main2(args []string) error {
 	}
 }
 
-var flagParse = flag.Bool("pause", false, "pause after copy")
+var flagPause = flag.Bool("pause", false, "pause after copy")
 
 func main1(args []string) error {
 	if len(args) < 2 {
@@ -109,7 +109,7 @@ func main1(args []string) error {
 	}
 	err := main2(args)
 	if !isAccessDenied(err) {
-		if *flagParse {
+		if *flagPause {
 			fmt.Fprint(os.Stderr, "\n[Hit ENTER key]\n")
 			var dummy [10]byte
 			os.Stdin.Read(dummy[:])
