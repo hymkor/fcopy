@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
 	_ "github.com/mattn/getwild"
+
+	"github.com/zetamatta/go-windows-su"
 
 	"github.com/zetamatta/fcopy/file"
 )
@@ -73,7 +76,7 @@ func isDir(fname string) (FileStatus, error) {
 	}
 }
 
-func mains(args []string) error {
+func main2(args []string) error {
 	dst := args[len(args)-1]
 	status, err := isDir(dst)
 	if err != nil {
@@ -87,17 +90,40 @@ func mains(args []string) error {
 				return err
 			}
 		}
+		return nil
 	} else {
 		if len(args) != 2 {
 			return fmt.Errorf("target '%s' is not a directory", dst)
 		}
-		copy1(args[0], args[1])
+		return copy1(args[0], args[1])
 	}
-	return nil
+}
+
+func main1(args []string) error {
+	err := main2(args)
+	if !isAccessDenied(err) {
+		return err
+	}
+	me, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	var buffer strings.Builder
+	for _, s := range args {
+		fmt.Fprintf(&buffer, ` "%s"`, s)
+	}
+
+	_, err = su.ShellExecute(su.RUNAS, me, buffer.String(), dir)
+	return err
 }
 
 func main() {
-	if err := mains(os.Args[1:]); err != nil {
+	if err := main1(os.Args[1:]); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
