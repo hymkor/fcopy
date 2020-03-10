@@ -103,6 +103,10 @@ func main2(args []string) error {
 var flagParse = flag.Bool("pause", false, "pause after copy")
 
 func main1(args []string) error {
+	if len(args) < 2 {
+		fmt.Fprintln(os.Stderr, "fcopy files... dir")
+		return nil
+	}
 	err := main2(args)
 	if !isAccessDenied(err) {
 		if *flagParse {
