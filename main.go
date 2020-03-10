@@ -3,42 +3,76 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"path/filepath"
+	"time"
 
-	"github.com/zetamatta/go-windows-netresource"
-	"github.com/zetamatta/go-windows-su"
+	"github.com/zetamatta/fcopy/file"
 )
 
+func copy1(src, dst string) error {
+	err := file.Copy(src, dst, false)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		backup := dst + time.Now().Format("-20060102_150405")
+		err = file.Move(dst, backup)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("%s: renamed to %s\n", dst, backup)
+		err = file.Copy(src, dst, false)
+		if err != nil {
+			return err
+		}
+	}
+	fmt.Printf("%s -> %s\n", src, dst)
+	return nil
+}
+
+type FileStatus int
+
+const (
+	PathNotFound FileStatus = iota
+	DirExist
+	FileExist
+	DirOrFileError
+)
+
+func isDir(fname string) (FileStatus, error) {
+	f, err := os.Stat(fname)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return PathNotFound, nil
+		}
+		return DirOrFileError, err
+	}
+	if f.IsDir() {
+		return DirExist, nil
+	} else {
+		return FileExist, nil
+	}
+}
+
 func mains(args []string) error {
-	var buffer strings.Builder
-	buffer.WriteString(`/s /c "`)
-
-	if netDrives, err := netresource.GetNetDrives(); err == nil {
-		for _, n := range netDrives {
-			fmt.Fprintf(&buffer, `net use %c: "%s" 2>nul & `,
-				n.Letter, n.Remote)
+	dst := args[len(args)-1]
+	status, err := isDir(dst)
+	if err != nil {
+		return err
+	}
+	if status == DirExist {
+		for _, srcpath := range args[:len(args)-1] {
+			name := filepath.Base(srcpath)
+			dstpath := filepath.Join(dst, name)
+			if err := copy1(srcpath, dstpath); err != nil {
+				return err
+			}
 		}
-	}
-
-	if dir, err := os.Getwd(); err == nil {
-		fmt.Fprintf(&buffer, `cd /D "%s" & `, dir)
-	}
-
-	buffer.WriteString("copy ")
-	for _, s := range args {
-		if s[0] == '/' {
-			fmt.Fprintf(&buffer, `%s `, s)
-		} else {
-			fmt.Fprintf(&buffer, `"%s" `, s)
+	} else {
+		if len(args) != 2 {
+			return fmt.Errorf("target '%s' is not a directory", dst)
 		}
+		copy1(args[0], args[1])
 	}
-	buffer.WriteString(`& pause"`)
-
-	param := buffer.String()
-
-	fmt.Printf("cmd %s\n", param)
-	_, err := su.ShellExecute(su.RUNAS, "cmd.exe", param, "")
-	return err
+	return nil
 }
 
 func main() {
