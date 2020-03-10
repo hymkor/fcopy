@@ -1,4 +1,4 @@
-package main
+package file
 
 func Copy(src, dst string, isFailIfExists bool) error {
 	return copyFile(src, dst, isFailIfExists)
