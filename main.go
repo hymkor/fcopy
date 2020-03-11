@@ -130,12 +130,15 @@ func main1(args []string) error {
 	}
 
 	var buffer strings.Builder
-	buffer.WriteString("-pause")
+	fmt.Fprintf(&buffer, `/s /c "cd /d "%s" & "%s" -pause`, dir, me)
 	for _, s := range args {
 		fmt.Fprintf(&buffer, ` "%s"`, s)
 	}
+	buffer.WriteString(` "`)
+	param := buffer.String()
+	fmt.Println(param)
 
-	_, err = su.ShellExecute(su.RUNAS, me, buffer.String(), dir)
+	_, err = su.ShellExecute(su.RUNAS, "CMD.EXE", param, "")
 	return err
 }
 
