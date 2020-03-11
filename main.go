@@ -12,6 +12,7 @@ import (
 
 	_ "github.com/mattn/getwild"
 
+	"github.com/zetamatta/go-windows-netresource"
 	"github.com/zetamatta/go-windows-su"
 
 	"github.com/zetamatta/fcopy/file"
@@ -130,7 +131,16 @@ func main1(args []string) error {
 	}
 
 	var buffer strings.Builder
-	fmt.Fprintf(&buffer, `/s /c "cd /d "%s" & "%s" -pause`, dir, me)
+	buffer.WriteString(`/s /c "`)
+
+	if netDrives, err := netresource.GetNetDrives(); err == nil {
+		for _, n := range netDrives {
+			fmt.Fprintf(&buffer, `net use %c: "%s" 2>nul & `,
+				n.Letter, n.Remote)
+		}
+	}
+	fmt.Fprintf(&buffer, `cd /d "%s" & "%s" -pause`, dir, me)
+
 	for _, s := range args {
 		fmt.Fprintf(&buffer, ` "%s"`, s)
 	}
