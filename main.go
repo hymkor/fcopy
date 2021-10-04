@@ -33,7 +33,7 @@ func isAccessDenied(err error) bool {
 	return ok && e == _ERRNO_ACCESS_IS_DENIED
 }
 
-func copy1(src, dst string) error {
+func tryCopy(src, dst string) error {
 	err := file.Copy(src, dst, false)
 	if err != nil {
 		if !isUsedAnotherProcess(err) {
@@ -79,7 +79,7 @@ func isDir(fname string) (FileStatus, error) {
 	}
 }
 
-func main2(args []string) error {
+func tryCopyFiles(args []string) error {
 	dst := args[len(args)-1]
 	status, err := isDir(dst)
 	if err != nil {
@@ -89,7 +89,7 @@ func main2(args []string) error {
 		for _, srcpath := range args[:len(args)-1] {
 			name := filepath.Base(srcpath)
 			dstpath := filepath.Join(dst, name)
-			if err := copy1(srcpath, dstpath); err != nil {
+			if err := tryCopy(srcpath, dstpath); err != nil {
 				return err
 			}
 		}
@@ -98,18 +98,18 @@ func main2(args []string) error {
 		if len(args) != 2 {
 			return fmt.Errorf("target '%s' is not a directory", dst)
 		}
-		return copy1(args[0], args[1])
+		return tryCopy(args[0], args[1])
 	}
 }
 
 var flagPause = flag.Bool("pause", false, "pause after copy")
 
-func main1(args []string) error {
+func mains(args []string) error {
 	if len(args) < 2 {
 		fmt.Fprintln(os.Stderr, "fcopy files... dir")
 		return nil
 	}
-	err := main2(args)
+	err := tryCopyFiles(args)
 	if !isAccessDenied(err) {
 		if *flagPause {
 			fmt.Fprint(os.Stderr, "\n[Hit ENTER key]\n")
@@ -154,7 +154,7 @@ func main1(args []string) error {
 
 func main() {
 	flag.Parse()
-	if err := main1(flag.Args()); err != nil {
+	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
