@@ -191,7 +191,11 @@ func mains(args []string) error {
 	fmt.Fprintf(&buffer, `cd /d "%s" & "%s" -pause`, dir, me)
 
 	for _, s := range args {
-		fmt.Fprintf(&buffer, ` "%s"`, s)
+		if len(s) >= 1 && s[len(s)-1] == '\\' {
+			fmt.Fprintf(&buffer, ` "%s."`, s)
+		} else {
+			fmt.Fprintf(&buffer, ` "%s"`, s)
+		}
 	}
 	buffer.WriteString(` "`)
 	param := buffer.String()
