@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
@@ -33,7 +34,55 @@ func isAccessDenied(err error) bool {
 	return ok && e == _ERRNO_ACCESS_IS_DENIED
 }
 
+func areSameFiles(path1, path2 string) bool {
+	fd1, err := os.Open(path1)
+	if err != nil {
+		return false
+	}
+	defer fd1.Close()
+	fd2, err := os.Open(path2)
+	if err != nil {
+		return false
+	}
+	defer fd2.Close()
+
+	stat1, err := fd1.Stat()
+	if err != nil {
+		return false
+	}
+	stat2, err := fd2.Stat()
+	if err != nil {
+		return false
+	}
+	if stat1.Size() != stat2.Size() {
+		return false
+	}
+
+	reader1 := bufio.NewReader(fd1)
+	reader2 := bufio.NewReader(fd2)
+
+	for {
+		b1, err1 := reader1.ReadByte()
+		b2, err2 := reader2.ReadByte()
+		if err1 != nil {
+			if err2 != nil {
+				return true
+			}
+			return false
+		} else if err2 != nil {
+			return false
+		}
+		if b1 != b2 {
+			return false
+		}
+	}
+}
+
 func tryCopy(src, dst string) error {
+	if areSameFiles(src, dst) {
+		fmt.Fprintf(os.Stderr, "'%s' and '%s' are same files.\n", src, dst)
+		return nil
+	}
 	err := file.Copy(src, dst, false)
 	if err != nil {
 		if !isUsedAnotherProcess(err) {
