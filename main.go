@@ -12,10 +12,10 @@ import (
 
 	_ "github.com/mattn/getwild"
 
-	"github.com/zetamatta/go-windows-netresource"
-	"github.com/zetamatta/go-windows-su"
+	"github.com/nyaosorg/go-windows-netresource"
+	"github.com/nyaosorg/go-windows-su"
 
-	"github.com/zetamatta/fcopy/file"
+	"github.com/zetamatta/fcopy/internal/file"
 )
 
 const (

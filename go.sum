@@ -1,0 +1,11 @@
+github.com/mattn/getwild v0.0.1 h1:+Nlzxt7fonj2MtO9y/rg5hxOnM3H6tuTqeD38W25jfo=
+github.com/mattn/getwild v0.0.1/go.mod h1:AG+GKQydHp7iLJn+VV+D7y8LeYs5bQ0Xz4fmKd5o1Sg=
+github.com/nyaosorg/go-windows-netresource v0.0.0-20200329084136-43063a7e4cd2/go.mod h1:/l55u68Ky+4wQuWDHSkAjKbwryygKU8+vJYaGT+gn58=
+github.com/nyaosorg/go-windows-netresource v0.0.0-20210914111819-6c37ed46c17d h1:TuWSbK5EQcofaHJzTQN0nUJMoXLepONrbSo3JP11JZk=
+github.com/nyaosorg/go-windows-netresource v0.0.0-20210914111819-6c37ed46c17d/go.mod h1:V/cHQHB7jxJ7KXZHErsIodC0FAYWaXaMj5R2v+FeLqw=
+github.com/nyaosorg/go-windows-su v0.2.0 h1:/w9XziPy3/zT/AJ/F8Yof0dQ+lGoEThb1aVRvM2Ki7U=
+github.com/nyaosorg/go-windows-su v0.2.0/go.mod h1:sJe4Z6t7CJQNDt96SahOBpcYjwPZ5JCaT5ocmWsuQxs=
+github.com/zetamatta/go-windows-netresource v0.0.0-20200329084136-43063a7e4cd2/go.mod h1:zcM57zYz2gjmxUmMZCbzex7+XgSPXm2/Rl2nrTUScMw=
+golang.org/x/sys v0.0.0-20201218084310-7d0127a74742/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 h1:xrCZDmdtoloIiooiA9q0OQb9r8HejIHYoHGhGCe1pGg=
+golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
