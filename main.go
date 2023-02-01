@@ -16,7 +16,7 @@ import (
 	"github.com/nyaosorg/go-windows-netresource"
 	"github.com/nyaosorg/go-windows-su"
 
-	"github.com/zetamatta/fcopy/internal/file"
+	"github.com/hymkor/fcopy/internal/file"
 )
 
 const (

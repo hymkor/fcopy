@@ -1,6 +1,6 @@
-module github.com/zetamatta/fcopy
+module github.com/hymkor/fcopy
 
-go 1.17
+go 1.20
 
 require (
 	github.com/mattn/getwild v0.0.1
