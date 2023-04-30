@@ -3,6 +3,8 @@ FCOPY
 
 `fcopy` copies files even if they are using by other processes and/or the destination directories are write-protected by not administrators.
 
+![./image.png](./image.png)
+
 ```
 fcopy SRC... DST
 ```
